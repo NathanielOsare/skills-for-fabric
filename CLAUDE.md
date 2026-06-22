@@ -141,3 +141,60 @@ https://learn.microsoft.com/en-us/rest/api/fabric/articles/
 - SELECT * without LIMIT on large tables
 - Long-running transactions in Warehouse
 - Unbounded streaming queries
+
+## Project Context & Resources — osare-cap-data Integration
+
+This `skills-for-fabric` repository is cloned into the **osare-cap-data** project, which has comprehensive, production-tested Power BI agentic development documentation. Use these resources alongside the Microsoft Fabric skills for complete context:
+
+### 1. Project Overview & Setup
+**File:** [../README.md](../README.md)
+- Project objectives, dependencies, and getting started guide
+- Reference for environment setup and authentication configuration
+
+### 2. Complete Power BI Agentic Development Briefing
+**File:** [../src/powerbi/docs/agentic-powerbi-development-briefing.md](../src/powerbi/docs/agentic-powerbi-development-briefing.md)
+- **Ecosystem map** — all MCP servers, CLIs, plugins, and their relationships (semantic model layer, report layer, CI/CD layer)
+- **Version control** — `power-bi-agentic-development` marketplace v26.25 (stable; v26.26 breaking consolidation coming)
+- **Anatsko product disambiguation** — `pbir-cli` (open-source) vs. Desktop MCP Server (commercial)
+- **Microsoft official skills** — `powerbi-authoring` bundle (`planning`, `design`, `authoring`, `management`) with Desktop Bridge reload/screenshot validation
+- **Data-goblin plugin ecosystem** — 6 plugins (tabular-editor, pbi-desktop, semantic-models, reports, pbip, fabric-cli) with deterministic hooks
+- **Fabric Apps vs. native PBIR** — decision tree for custom web app dashboards (React/Vega-Lite)
+- **Worked examples** — 8-phase MCP semantic model build, HTML wireframe → working Power BI report, dashboard optimization workflows
+- **CI/CD, governance, theming, and custom visuals** — Deneb (Vega-Lite) over SVG DAX
+
+### 3. Power BI Agent Tool Quick Reference (Cheat Sheet)
+**File:** [../src/powerbi/docs/agent-tool-cheatsheet.md](../src/powerbi/docs/agent-tool-cheatsheet.md)
+- **6-stage development cycle** — Plan & Design → Semantic Model → Report/PBIR → Bespoke Visuals → Validate → Deploy
+- **Installed tools** — Power BI Modeling MCP v0.4.0, data-goblin plugins v26.25, pbir-cli, sequential-thinking MCP
+- **Desktop Bridge integration** — reload/screenshot workflow for validation
+- **pbir-cli gotchas** — UTF-8 BOM handling, mobile.json schema versions, parentGroupName orphans, visual auto-slug length limits
+- **MCP known constraints** — calculated tables, isKey support, relationship best practices
+- **Effort & model guidance** — when to use Opus-tier (judgment calls: wireframe interpretation, DAX diagnosis) vs. Sonnet 4.6 (mechanical: PBIR authoring, bulk edits)
+- **Cost-reduction tactics** — MCP server management, targeted queries, prompt caching, conversation compacting
+
+### Integration Pattern for This Project
+
+When working on **Power BI report or semantic model tasks** in osare-cap-data:
+
+1. **Start with the briefing** ([agentic-powerbi-development-briefing.md](../src/powerbi/docs/agentic-powerbi-development-briefing.md)) for ecosystem context and tool relationships.
+2. **Use the cheat sheet** ([agent-tool-cheatsheet.md](../src/powerbi/docs/agent-tool-cheatsheet.md)) to pick the right tool for your task (MCP vs. pbir-cli vs. skill).
+3. **Reference this file** (skills-for-fabric CLAUDE.md) for Fabric-specific workload operations (Warehouse, Lakehouse, Eventstreams, KQL) and REST API patterns.
+4. **Cross-reference osare-cap-data/CLAUDE.md** — project-level rules for tool boundaries, MCP server setup, TMDL formatting, validation loops, and plugin usage decision trees.
+
+### Key Distinctions (osare-cap-data context)
+
+| Layer | Owner | Reference |
+|---|---|---|
+| PBIR report files (disk) | `pbir-cli` / `pbip` plugins | agent-tool-cheatsheet.md § Stage 3 |
+| Semantic model (Desktop open) | `mcp__powerbi-modeling__*` (Modeling MCP v0.4.0) | agent-tool-cheatsheet.md § Stage 2; osare-cap-data/CLAUDE.md § MCP Server Setup |
+| Semantic model (Desktop closed) | `te2-cli` (Tabular Editor 2) | agent-tool-cheatsheet.md § Stage 2; osare-cap-data/CLAUDE.md § Tool Boundaries |
+| Fabric semantic model (Workspace / Fabric REST API) | `skills/semantic-model-authoring/SKILL.md` + `az rest` | skills-for-fabric CLAUDE.md § Business Intelligence |
+| Embedded report (runtime, web app) | `powerbi-report-authoring` npm SDK | agent-tool-cheatsheet.md § REF C |
+| Fabric workspace operations | `skills/fabric-*` + `az rest` | skills-for-fabric README.md § Install |
+
+### When to Escalate
+
+- **Cross-Fabric-Workload orchestration** → Use `agents/FabricDataEngineer.agent.md` from this skills-for-fabric repo
+- **Power BI Desktop Bridge validation** → Use `pbi-desktop:connect-pbid` skill from osare-cap-data's installed data-goblin plugins
+- **Live semantic model DAX/M changes** → Use Power BI Modeling MCP (osare-cap-data project) for fast iteration; publish to Fabric workspace via `powerbi-report-management` skill
+- **Performance diagnostics** → Warehouse: use `skills/sqldw-operations-cli/SKILL.md`; Power BI: use DAX Studio + `skills/semantic-models:dax` skill
